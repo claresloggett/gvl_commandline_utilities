@@ -10,16 +10,16 @@ echo "Installing RStudio and dependencies"
 
 apt-get install gdebi-core
 if [ $(dpkg -s rstudio-server | grep "^Status.*ok" | wc -l) != '1' ]; then
-  wget http://download2.rstudio.org/rstudio-server-0.98.501-amd64.deb
-  yes | gdebi rstudio-server-0.98.501-amd64.deb
-  rm rstudio-server-0.98.501-amd64.deb
+  wget http://download2.rstudio.org/rstudio-server-0.98.1103-amd64.deb
+  yes | gdebi rstudio-server-0.98.1103-amd64.deb
+  rm rstudio-server-0.98.1103-amd64.deb
 else
   echo "rstudio-server already installed; not installing."
 fi
 
 echo "Writing NGINX config for RStudio"
 
-cat > /usr/nginx/conf/rstudio_nginx.conf << END
+cat > /etc/nginx/sites-enabled/rstudio_nginx.locations << END
 location /rstudio/ {
   rewrite ^/rstudio/(.*)\$ /\$1 break;
   proxy_pass http://localhost:8787;
@@ -27,7 +27,7 @@ location /rstudio/ {
 }
 END
 
-/usr/nginx/sbin/nginx -s reload
+service nginx reload
 
 echo "Configuring RStudio"
 
