@@ -8,10 +8,14 @@
 
 echo "Installing RStudio and dependencies"
 
-apt-get install gdebi-core
+conf_dir="/etc/nginx"
+sites_dir=$conf_dir"/sites-enabled"
+
+apt-get -y install gdebi-core
+apt-get -y install libapparmor1
 if [ $(dpkg -s rstudio-server | grep "^Status.*ok" | wc -l) != '1' ]; then
   wget http://download2.rstudio.org/rstudio-server-0.98.1103-amd64.deb
-  yes | gdebi rstudio-server-0.98.1103-amd64.deb
+  gdebi --non-interactive rstudio-server-0.98.1103-amd64.deb
   rm rstudio-server-0.98.1103-amd64.deb
 else
   echo "rstudio-server already installed; not installing."
@@ -19,7 +23,7 @@ fi
 
 echo "Writing NGINX config for RStudio"
 
-cat > /etc/nginx/sites-enabled/rstudio_nginx.locations << END
+cat > $sites_dir"/rstudio.locations" << END
 location /rstudio/ {
   rewrite ^/rstudio/(.*)\$ /\$1 break;
   proxy_pass http://localhost:8787;

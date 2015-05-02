@@ -10,7 +10,10 @@
 # Authored as part of the Genomics Virtual Laboratory project
 
 
-conf_file="/etc/nginx/sites-enabled/public_html.locations"
+conf_dir="/etc/nginx"
+sites_dir=$conf_dir"/sites-enabled"
+
+conf_file=$sites_dir"/public_html.locations"
 username=$1
 redirect="/public/"$username"/"
 
@@ -25,6 +28,12 @@ sudo su $username -c 'if [ ! -e ~/public_html ]; then mkdir ~/public_html; fi'
 sudo su $username -c 'chmod 755 ~/public_html'
 
 # Add redirect to nginx conf via public_html.locations
+# Create conf file if it does not exist
+if [ ! -e $conf_file ]; then
+    touch $conf_file;
+fi
+
+# Add redirect to conf file
 # If redirect already exists, do nothing
 
 if [ $(grep $redirect $conf_file | wc -l) = '0' ]; then
@@ -41,6 +50,5 @@ END
 else
     echo "User "$username" appears to already have a redirect in "$conf_file"; not adding"
 fi
-
 
 service nginx reload

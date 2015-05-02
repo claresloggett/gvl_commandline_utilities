@@ -9,7 +9,6 @@
 # either open ports, or a more complex convention for NGINX location forwarding.
 # This default config just handles a single Notebook instance which may be run by any
 # user and will appear at /ipython .
-#
 
 # Clare Sloggett, VLSCI, University of Melbourne
 # Authored as part of the Genomics Virtual Laboratory project
@@ -18,23 +17,16 @@
 # Exit if any command fails so we can troubleshoot
 set -e
 
-conf_dir="/etc/nginx/sites-enabled"
+conf_dir="/etc/nginx"
+sites_dir=$conf_dir"/sites-enabled"
 
-#### HTTP setup
-
-# Create empty files as placeholders so nginx won't see missing files
-touch $conf_dir"/public_html.locations"
-touch $conf_dir"/rstudio_nginx.locations"
-touch $conf_dir"/ipython_nginx.locations"
-
-
-#### IPython Notebook setup
+### IPython Notebook setup
 # Write out IPython Notebook conf file
 
 ipython_port="9510"
 ipython_location="/ipython/"
 
-cat > $conf_dir"/ipython_nginx.locations" << END
+cat > $sites_dir"/ipython_nginx.locations" << END
 
 location $ipython_location {
     proxy_pass http://127.0.0.1:$ipython_port;
