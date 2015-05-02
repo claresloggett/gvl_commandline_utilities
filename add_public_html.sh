@@ -27,7 +27,6 @@ fi
 sudo su $username -c 'if [ ! -e ~/public_html ]; then mkdir ~/public_html; fi'
 sudo su $username -c 'chmod 755 ~/public_html'
 
-# Add redirect to nginx conf via public_html.locations
 # Create conf file if it does not exist
 if [ ! -e $conf_file ]; then
     touch $conf_file;
